@@ -34,11 +34,12 @@ public:
 	ConsoleColor	GetTileColor(POS pos);
 	POS				GetEnterPos()	{ return POS{ 1, 1 }; };
 	POS				GetExitPos()	{ return POS{ _size - 2, _size - 2 }; };
+	INT32			GetSize()		{ return _size; }
 
 private:
 	TILE_TYPE		_tile[BOARD_MAX_SIZE][BOARD_MAX_SIZE] = {};
 	INT32			_size = 0;
 	Player*			p_player;
-	
+
 };
 

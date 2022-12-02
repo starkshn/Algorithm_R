@@ -4,12 +4,14 @@
 #include <windows.h>
 #include <iostream>
 #include <vector>
+#include <queue>
+#include <map>
 using namespace std;
 
 struct POS
 {
-	int32 y = 0;
 	int32 x = 0;
+	int32 y = 0;
 
 	bool operator == (POS& other)
 	{
@@ -20,11 +22,18 @@ struct POS
 		return !(*this == other);
 	}
 
+	bool operator < (const POS& other) const
+	{
+		if (y != other.y)
+			return y < other.y;
+		return x < other.x;
+	}
+
 	POS operator + (POS& other)
 	{
 		POS ret;
-		ret.y = other.y;
-		ret.x = other.x;
+		ret.y = y + other.y;
+		ret.x = x + other.x;
 		return ret;
 	}
 
@@ -34,6 +43,8 @@ struct POS
 		x += other.x;
 		return *this;
 	}
+
+	
 };
 
 enum class DIR
