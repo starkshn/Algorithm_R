@@ -4,6 +4,7 @@
 #include <queue>
 #include <map>
 #include <list>
+#include <algorithm>
 
 std::vector<std::vector<int>> adjacent;
 
@@ -34,13 +35,12 @@ void Dijkstra(int here)
 	best[here] = 0;
 	parent[here] = here;
 
-	int i = 0;
-
 	while (discovered.empty() == false)
 	{
 		std::vector<std::pair<int, int>>::iterator bestIter;
 		int bestCost = INT32_MAX;
 
+		// 가장 좋은 후보 찾는 부분.
 		for (auto iter = discovered.begin(); iter != discovered.end(); ++iter)
 		{
 			int vertex = iter->first;
@@ -52,6 +52,19 @@ void Dijkstra(int here)
 				bestIter = iter;
 			}
 		}
+
+		/*std::for_each (discovered.begin(), discovered.end(), [&bestCost, &bestIter](auto& iter) 
+			{
+				int vertex = iter->first;
+				int cost = iter->second;
+
+				if (cost < bestCost)
+				{
+					bestCost = cost;
+					bestIter = iter;
+				}
+			}
+		);*/
 
 		int cost = bestIter->second;
 		here = bestIter->first;
@@ -76,13 +89,8 @@ void Dijkstra(int here)
 
 			std::cout << "best[there] : " << nextCost << std::endl;
 
-			discovered.emplace_back(there, nextCost);
-
-			
+			discovered.emplace_back(there, nextCost);	
 		}
-
-		std::cout << i + 1 << "번 수행후 size() : " << discovered.size() << std::endl;
-		++i;
 	}
 }
 

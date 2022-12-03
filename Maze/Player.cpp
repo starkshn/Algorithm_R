@@ -9,14 +9,19 @@ void Player::Init(Board* board)
 	p_board = board;
 
 	// RightHand();
-	BFS();
+	// BFS();
+	Astar();
 	
 }
 
 void Player::Update(uint64 deltaTick)
 {
 	if (_pathIdx >= _path.size())
+	{
+		p_board->GenerateMap();
+		Init(p_board);
 		return;
+	}
 
 	_sumTick += deltaTick;
 	
@@ -174,7 +179,7 @@ void Player::BFS()
 	{
 		_path.push_back(pos);
 
-		// 시작점은 자신이 곧 부모이다.
+		// 시작점은 자신이 곧 부모이다. (그렇게 설정을 했기 때문에)
 		if (pos == parent[pos])
 			break;
 
@@ -185,6 +190,145 @@ void Player::BFS()
 
 	cout << count << endl;
 }
+
+struct PQNode
+{
+	bool operator < (const PQNode& other)  const { return f < other.f; }
+	bool operator > (const PQNode& other)  const { return f > other.f; }
+
+	int32 f;
+	int32 g;
+	POS pos;
+};
+
+void Player::Astar()
+{
+	// F = G + H
+	// F = 최종 점수 (작을 수록 좋음, 경로에 따라 달라짐)
+	// G = 시작점에서 해당 좌표까지 이동하는데 드는 비용 (작을 수록 좋음, 경로에 따라 달라짐)
+	// H = 목적지에서 얼마나 가까운지 (작을 수록 좋음, 고정) (공식을 정해주어야함)
+
+
+	POS start = _pos;
+	POS dest = p_board->GetExitPos();
+
+	enum
+	{
+		DIR_COUNT = 4
+	};
+
+	POS front[] =
+	{
+		POS {0, -1},
+		POS {-1, 0},
+		POS {0, 1},
+		POS {1, 0},
+
+		POS {-1, -1},
+		POS {1, -1},
+		POS {1, 1},
+		POS {-1, 1}
+	};
+
+	int32 cost[] =
+	{
+		10, 10, 10, 10,
+		14, 14, 14, 14
+	};
+
+	const int32 size = p_board->GetSize();
+
+	// ClosedList (옵션임)
+	// closed[y][x] -> (y, x)에 방문을 했는지 여부 (방문을 끝낸애들)
+	vector<vector<bool>> closed(size, vector<bool>(size, false));
+
+	// best[y][x] -> 지금까지 (y, x)에 대한 가장 좋은 비용 (작을 수록 좋음)
+	vector<vector<int32>> best(size, vector<int32>(size, INT32_MAX));
+
+	// 부모 추적 용도
+	map<POS, POS> parent;
+
+	// OpenList (에약된 애들 관리하는 자료구조)
+	// 발견한 상태인 녀석들을 OpenList로 관리할 것임. (절반의 성공 느낌)
+	priority_queue<PQNode, std::vector<PQNode>, std::greater<PQNode>> pq;
+
+	// 1) 예약(발견) 시스템 구현
+	// 2) 뒤늦게 더 좋은 경로가 발견될 수 있음 -> 예외 처리 필수
+	
+	// 초기값
+	{
+		int32 g = 0; // 시작점 -> 시작점이라 0.
+		int32 h = 10 * (std::abs(dest.y - start.y) + std::abs(dest.x - start.x));
+		pq.push(PQNode{g + h, g, start});
+		best[start.y][start.x] = g + h;
+		parent[start] = start;
+	}
+	
+	while (pq.empty() == false)
+	{
+		// 제일 좋은 후보를 찾는다.
+		PQNode node = pq.top();
+		pq.pop();
+
+		// 동일한 좌표를 여러 경로로 찾아서 
+		// 더 빠른 경로로 인해서 이미 방문(closed)된 경우 스킵. ( 이부분 누락하면 드라군이 왼쪽갔다 오른쪽갔다 와리가리침)
+		
+		// [선택] (중복된 부분 선택할 수 있는 방법 두가지)
+		if (closed[node.pos.y][node.pos.x])
+			continue;
+		if (best[node.pos.y][node.pos.x] < node.f)
+			continue;
+
+		// 방문
+		closed[node.pos.y][node.pos.x] = true;
+
+		// 목적지에 도착했으면 종료
+		if (node.pos == dest)
+			break;
+
+		for (int32 dir = 0; dir < DIR_COUNT; ++dir)
+		{
+			POS nextPos = node.pos + front[dir];
+			if (Cango(nextPos) == false)
+				continue;
+			// [선택] 이미 방문한 곳이라면 스킵
+			if (closed[nextPos.y][nextPos.x])
+				continue;
+
+			// 비용계산
+			int32 g = node.g + cost[dir]; // 이전 좌표에서 현재 좌표로 이동하는데 드는 비용 => 시작점을 기준으로 이동하는데 드는 비용.
+			int32 h = 10 * (std::abs(dest.y - nextPos.y) + std::abs(dest.x - nextPos.x)); // 해당 좌표에서 고정적임 => 목적지를 기준으로 얼마만큼 떨어져있느냐?.
+
+			// 다른 경로에서 더 빠른 길을 찾았다면 스킵 (더 빠른 길이 있다면)
+			if (best[nextPos.y][nextPos.x] <= g + h)
+				continue;
+
+			// 예약진행
+			best[nextPos.y][nextPos.x] = g + h;
+			pq.push(PQNode{g + h, g, nextPos});
+			parent[nextPos] = node.pos;
+		}
+	}
+
+	// 거꾸로 거슬러 올라간다
+	POS pos = dest;
+	
+	_path.clear();
+	_pathIdx = 0;
+
+	while (true)
+	{
+		_path.push_back(pos);
+
+		if (pos == parent[pos])
+			break;
+
+		pos = parent[pos];
+	}
+
+	std::reverse(_path.begin(), _path.end());
+}
+
 
 bool Player::Cango(POS pos)
 {

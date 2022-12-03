@@ -16,6 +16,7 @@ public:
 private:
 	void	RightHand(); // ¿ì¼ö¹ý
 	void	BFS();
+	void	Astar();
 
 public:
 	void	SetPos(POS pos) { _pos = pos; }

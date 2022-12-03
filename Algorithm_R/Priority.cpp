@@ -6,164 +6,98 @@
 #include <list>
 using namespace std;
 
-template <typename T>
-struct Node
+template <typename T, typename Container = std::vector<T>, typename Predicate = less<T>>
+class PriorityQueue
 {
-public:
-	T		 _data = -1;
-	Node<T>* _parent = nullptr;
-	Node<T>* _rightChild = nullptr;
-	Node<T>* _leftChild = nullptr;
-
-public:
-	Node() { cout << "Node 기본 생성자 호출 " << endl; }
-
-public:
-	Node<T>& operator = (const Node<T>& other)
-	{
-		this->_data = other._data;
-		this->_parent = other._parent;
-		this->_leftChild = other._leftChild;
-		this->_rightChild = other._rightChild;
-
-		return *this;
-	}
-
-	//bool operator == (const Node<T>& other)
-	//{
-
-	//}
-
-	//bool operator != (const Node<T>& other)
-	//{
-
-	//}
-
-	//bool operator < (const Node<T>& other)
-	//{
-
-	//}
-
-	//bool operator > (const Node<T>& other)
-	//{
-
-	//}
-
-
-
-};
-
-
-template <typename T>
-class PQ
-{
-private:
-	std::vector<Node<T>*>	_pq;
-	Node<T>*				_rootNode = nullptr;
-
-public:
-	PQ() { _pq.reserve(20);  cout << "PQ 기본 생성자 호출 " << endl; }
-	~PQ() 
-	{
-		for (size_t i = 0; i < _pq.size(); ++i)
-			delete _pq[i];
-	}
-
 public:
 	void push(const T& data)
 	{
-		if (_rootNode == nullptr)
-		{
-			_rootNode = new Node<T>;
-			_rootNode->_data = data;
-			_pq.push_back(_rootNode);
-		}
-		else
-		{
-			// 데이터 넣기
-			for (size_t i = 0; i < _pq.size(); ++i)
-			{
-				// left 있을 경우
-				if (_pq[i]->_leftChild != nullptr)
-				{
-					if (_pq[i]->_rightChild != nullptr)
-						continue;
-					else
-					{
-						Node<T>* node =  new Node<T>;
-						node->_data = data;
-						node->_parent = _pq[i];
-						_pq.push_back(node);
-						break;
-					}
-				}
-				// left없을경우
-				else
-				{
-					Node<T>* node = new Node<T>;
-					node->_data = data;
-					node->_parent = _pq[i];
-					_pq[i]->_leftChild = node;
-					_pq.push_back(node);
-					break;
-				}
-			}
+		// 힙구조 맞추기
+		_heap.push_back(data);
+		
+		// 도장깨기
+		int now = static_cast<int>(_heap.size()) - 1;
 
-			// 도장깨기
-			while (true)
-			{
-				
-			}
+		while (now > 0)
+		{
+			// 현재 (index - 1) / 2 => 부모 인덱스
+			int next = (now - 1) / 2;
+			
+			// 부모 노드와 비교해서 더 작으면 패배
+			if (_predicate(_heap[now], _heap[next]))
+				break;
+
+			// 데이터 교체
+			std::swap(_heap[now], _heap[next]);
+			now = next;
 		}
 	}
 
-	void	pop()	{ _pq.erase(_pq.front()); }
-	T		top()	{ return _pq.front(); }
-	T		empty() { return _pq.empty(); }
-	int		size()	{ return _pq.size(); }
-	
-public:
-	T GetLeftChild(int idx)
+	void pop()
 	{
-		return _pq[(2 * idx) + 1]->_data;
+		_heap[0] = _heap.back();
+		_heap.pop_back();
+
+		int now = 0;
+
+		while (true)
+		{
+			int left = 2 * now + 1;	 // left = 2 * i + 1
+			int right = 2 * now + 2; // right = 2 * i + 2
+
+			// leaf에 도달한 경우
+			if (left >= (int)_heap.size())
+				break;
+
+			int next = now;
+
+			if (_predicate(_heap[next], _heap[left]))
+				next = left;
+
+			if (right < (int)_heap.size() && _predicate(_heap[next], _heap[right]))
+				next = right;
+
+			if (next == now)
+				break;
+
+			std::swap(_heap[now], _heap[next]);
+			now = next;
+		}
 	}
 
-	T GetRightChild(int idx)
+	T& top()
 	{
-
-		return _pq[2 * idx + 2]->_data;
+		return _heap[0];
 	}
 
-	T GetParent(int idx)
+	bool empty()
 	{
-
-		return _pq[(idx - 1) / 2]->_data;
+		return _heap.empty();
 	}
 
-public:
-	
-
+private:
+	Container _heap = {};
+	Predicate _predicate = {};
 };
 
 
 int main()
 {
-	PQ<int> pq;
-	pq.push(200);
+	PriorityQueue<int, vector<int>, std::greater<int>> pq;
+
+	pq.push(100);
 	pq.push(300);
+	pq.push(200);
 	pq.push(500);
 	pq.push(400);
-	pq.push(700);
-	pq.push(800);
+
+	while (pq.empty() == false)
+	{
+		int value = pq.top();
+		pq.pop();
+
+		cout << value << endl;
+	}
 	
-
-	cout << pq.GetLeftChild(0) << endl;
-	cout << pq.GetRightChild(0) << endl;
-	cout << pq.GetParent(4) << endl;
-
-
-	int a = 10;
-	
-
 	return 0;
 }
