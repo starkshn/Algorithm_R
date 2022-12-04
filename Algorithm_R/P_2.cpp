@@ -10,9 +10,9 @@ using NodeRef = std::shared_ptr<struct Node>;
 struct Node
 {
 	Node() {}
-	Node(const std::string& data) : _data(data) {}
+	Node(const std::string& data) : data(data) {}
 	
-	std::string _data;
+	std::string data;
 	std::vector<NodeRef> _children;
 };
 
@@ -96,7 +96,7 @@ void PrintTree(NodeRef root, int height)
 	for (int i = 0; i < height; ++i)
 		std::cout << "-";
 	
-	std::cout << root->_data << std::endl;
+	std::cout << root->data << std::endl;
 
 	for (NodeRef& child : root->_children)
 		PrintTree(child, height + 1);

@@ -19,20 +19,20 @@ private:
 	void	Astar();
 
 public:
-	void	SetPos(POS pos) { _pos = pos; }
+	void	SetPos(Pos pos) { _pos = pos; }
 	
 public:
-	POS		GetPos() { return _pos; }
+	Pos		GetPos() { return _pos; }
 
 public:
-	bool	Cango(POS pos);
+	bool	Cango(Pos pos);
 
 private:
-	POS				_pos = {};
+	Pos				_pos = {};
 	DIR				_dir = DIR::UP;
 	Board*			p_board = nullptr;
 
-	vector<POS>		_path;
+	vector<Pos>		_path;
 	int32			_pathIdx = 0;
 	uint64			_sumTick = 0;
 

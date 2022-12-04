@@ -30,7 +30,7 @@ void Board::Render()
 	{
 		for (int32 x = 0; x < _size; ++x)
 		{
-			ConsoleColor color = GetTileColor(POS{ y, x });
+			ConsoleColor color = GetTileColor(Pos{ y, x });
 			ConsoleHelper::SetCursorColor(color);
 
 			cout << tile;
@@ -89,7 +89,7 @@ void Board::GenerateMap()
 	}
 }
 
-TILE_TYPE Board::GetTileType(POS pos)
+TILE_TYPE Board::GetTileType(Pos pos)
 {
 	if (pos.x < 0 || pos.x >= _size)
 		return TILE_TYPE::NONE;
@@ -101,7 +101,7 @@ TILE_TYPE Board::GetTileType(POS pos)
 
 }
 
-ConsoleColor Board::GetTileColor(POS pos)
+ConsoleColor Board::GetTileColor(Pos pos)
 {
 	if (p_player != nullptr && p_player->GetPos() == pos)
 		return ConsoleColor::YELLOW;

@@ -11,10 +11,10 @@ struct Node
 {
 public:
 	Node() {}
-	Node(const std::string& data) : _data(data) {}
+	Node(const std::string& data) : data(data) {}
 
 public:
-	std::string				_data;
+	std::string				data;
 	std::vector<NodeRef>	_children;
 };
 
@@ -88,7 +88,7 @@ void PrintTree(NodeRef root, int depth)
 {
 	for (int i = 0; i < depth; ++i)
 		std::cout << "-";
-	std::cout << root->_data << std::endl;
+	std::cout << root->data << std::endl;
 
 	for (NodeRef& child : root->_children)
 		PrintTree(child, depth + 1);

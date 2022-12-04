@@ -36,21 +36,21 @@ void Player::Update(uint64 deltaTick)
 
 void Player::RightHand()
 {
-	POS pos = _pos;
+	Pos pos = _pos;
 	DIR dir = _dir;
 
 	_path.clear();
 	_path.push_back(pos);
 
-	POS dest = p_board->GetExitPos();
+	Pos dest = p_board->GetExitPos();
 
 
-	POS front[4] =
+	Pos front[4] =
 	{
-		POS {0, -1},
-		POS {-1, 0},
-		POS {0, 1},
-		POS {1, 0}
+		Pos {0, -1},
+		Pos {-1, 0},
+		Pos {0, 1},
+		Pos {1, 0}
 	};
 
 	while (pos != dest)
@@ -81,7 +81,7 @@ void Player::RightHand()
 		}
 	}
 
-	stack<POS> s;
+	stack<Pos> s;
 
 	for (int i = 0; i < _path.size() - 1; ++i)
 	{
@@ -100,7 +100,7 @@ void Player::RightHand()
 	if (_path.empty() == false)
 		s.push(_path.back());
 
-	vector<POS> path;
+	vector<Pos> path;
 	while (!s.empty())
 	{
 		path.push_back(s.top());
@@ -115,25 +115,25 @@ void Player::RightHand()
 
 void Player::BFS()
 {
-	POS pos = _pos;
+	Pos pos = _pos;
 	DIR dir = _dir;
 
-	POS dest = p_board->GetExitPos();
+	Pos dest = p_board->GetExitPos();
 
-	POS front[4] =
+	Pos front[4] =
 	{
-		POS {0, -1},
-		POS {-1, 0},
-		POS {0, 1},
-		POS {1, 0}
+		Pos {0, -1},
+		Pos {-1, 0},
+		Pos {0, 1},
+		Pos {1, 0}
 	};
 
 	const int32 size = p_board->GetSize();
 	vector<vector<bool>> discovered(size, vector<bool>(size, false));
 
-	map<POS, POS> parent;
+	map<Pos, Pos> parent;
 
-	queue<POS> q;
+	queue<Pos> q;
 	q.push(pos);
 	discovered[pos.y][pos.x] = true;
 	parent[pos] = pos;
@@ -153,7 +153,7 @@ void Player::BFS()
 
 		for (int32 dir = 0; dir < 4; ++dir)
 		{
-			POS nextPos = pos + front[dir];
+			Pos nextPos = pos + front[dir];
 
 			// 갈 수 있는 곳인지 아닌지 체크
 			if (Cango(nextPos) == false)
@@ -198,7 +198,7 @@ struct PQNode
 
 	int32 f;
 	int32 g;
-	POS pos;
+	Pos pos;
 };
 
 void Player::Astar()
@@ -208,26 +208,25 @@ void Player::Astar()
 	// G = 시작점에서 해당 좌표까지 이동하는데 드는 비용 (작을 수록 좋음, 경로에 따라 달라짐)
 	// H = 목적지에서 얼마나 가까운지 (작을 수록 좋음, 고정) (공식을 정해주어야함)
 
-
-	POS start = _pos;
-	POS dest = p_board->GetExitPos();
+	Pos start = _pos;
+	Pos dest = p_board->GetExitPos();
 
 	enum
 	{
 		DIR_COUNT = 4
 	};
 
-	POS front[] =
+	Pos front[] =
 	{
-		POS {0, -1},
-		POS {-1, 0},
-		POS {0, 1},
-		POS {1, 0},
+		Pos {0, -1},
+		Pos {-1, 0},
+		Pos {0, 1},
+		Pos {1, 0},
 
-		POS {-1, -1},
-		POS {1, -1},
-		POS {1, 1},
-		POS {-1, 1}
+		Pos {-1, -1},
+		Pos {1, -1},
+		Pos {1, 1},
+		Pos {-1, 1}
 	};
 
 	int32 cost[] =
@@ -246,7 +245,7 @@ void Player::Astar()
 	vector<vector<int32>> best(size, vector<int32>(size, INT32_MAX));
 
 	// 부모 추적 용도
-	map<POS, POS> parent;
+	map<Pos, Pos> parent;
 
 	// OpenList (에약된 애들 관리하는 자료구조)
 	// 발견한 상태인 녀석들을 OpenList로 관리할 것임. (절반의 성공 느낌)
@@ -288,7 +287,7 @@ void Player::Astar()
 
 		for (int32 dir = 0; dir < DIR_COUNT; ++dir)
 		{
-			POS nextPos = node.pos + front[dir];
+			Pos nextPos = node.pos + front[dir];
 			if (Cango(nextPos) == false)
 				continue;
 			// [선택] 이미 방문한 곳이라면 스킵
@@ -311,7 +310,7 @@ void Player::Astar()
 	}
 
 	// 거꾸로 거슬러 올라간다
-	POS pos = dest;
+	Pos pos = dest;
 	
 	_path.clear();
 	_pathIdx = 0;
@@ -330,7 +329,7 @@ void Player::Astar()
 }
 
 
-bool Player::Cango(POS pos)
+bool Player::Cango(Pos pos)
 {
 	TILE_TYPE tileType = p_board->GetTileType(pos);
 	return tileType == TILE_TYPE::EMPTY;

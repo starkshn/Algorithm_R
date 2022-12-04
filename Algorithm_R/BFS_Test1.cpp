@@ -62,29 +62,29 @@ void BFS_ALL()
 			BFS(i);
 }
 
-struct POS
+struct Pos
 {
 	int x = 0;
 	int y = 0;
 
-	bool operator == (POS& other)
+	bool operator == (Pos& other)
 	{
 		return y == other.y && x == other.x;
 	}
-	bool operator != (POS& other)
+	bool operator != (Pos& other)
 	{
 		return !(*this == other);
 	}
 
-	POS operator + (POS& other)
+	Pos operator + (Pos& other)
 	{
-		POS ret;
+		Pos ret;
 		ret.y = y + other.y;
 		ret.x = x + other.x;
 		return ret;
 	}
 
-	POS& operator += (POS& other)
+	Pos& operator += (Pos& other)
 	{
 		y += other.y;
 		x += other.x;

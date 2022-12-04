@@ -8,36 +8,36 @@
 #include <map>
 using namespace std;
 
-struct POS
+struct Pos
 {
 	int32 x = 0;
 	int32 y = 0;
 
-	bool operator == (POS& other)
+	bool operator == (Pos& other)
 	{
 		return y == other.y && x == other.x;
 	}
-	bool operator != (POS& other)
+	bool operator != (Pos& other)
 	{
 		return !(*this == other);
 	}
 
-	bool operator < (const POS& other) const
+	bool operator < (const Pos& other) const
 	{
 		if (y != other.y)
 			return y < other.y;
 		return x < other.x;
 	}
 
-	POS operator + (POS& other)
+	Pos operator + (Pos& other)
 	{
-		POS ret;
+		Pos ret;
 		ret.y = y + other.y;
 		ret.x = x + other.x;
 		return ret;
 	}
 
-	POS& operator += (POS& other)
+	Pos& operator += (Pos& other)
 	{
 		y += other.y;
 		x += other.x;

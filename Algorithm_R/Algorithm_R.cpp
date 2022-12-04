@@ -4,6 +4,8 @@
 #include <queue>
 using namespace std;
 
+#include "Bst.h"
+
 # pragma region ArrayQueue
 // [front][][][][][][][][][][][][back]
 template <typename T>
@@ -168,32 +170,17 @@ void BFS_ALL()
 
 int main()
 {
-   /* ArrayQueue<int> q;
+    Bst bst;
 
-    for (int i = 0; i < 100; ++i)
-    {
-        q.push(i);
-    }
+    bst.Insert(30);
+    bst.Insert(20);
+    bst.Insert(35);
+    bst.Insert(15);
+    bst.Insert(33);
+    bst.Insert(40);
 
-    while (q.empty() == false)
-    {
-        int value = q.front();
-        q.pop();
-        std::cout << value << " " << q.size() << std::endl;
-    }
+    bst.Delete(30);
 
-    int size = q.size();
-    std::cout << size << " " << std::endl;*/
-
-    CreateGraph();
-
-    // v = vector<bool>(6, false);
-    // DFS(0);
-
-    discovered = vector<bool>(6, false);
-
-    BFS(0);
-
-    
+    bst.Print();
 }
 
