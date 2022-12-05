@@ -8,6 +8,9 @@
     <Filter Include="BST">
       <UniqueIdentifier>{1e06c8b4-45c0-48cf-b908-c53bfd77fdde}</UniqueIdentifier>
     </Filter>
+    <Filter Include="RedBlackTree">
+      <UniqueIdentifier>{9b0e7c18-6236-458b-a945-bb1b8238b189}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Algorithm_R.cpp">
@@ -49,11 +52,17 @@
     <ClCompile Include="B_Search.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="RedBlackTree.cpp">
+      <Filter>RedBlackTree</Filter>
+    </ClCompile>
     <ClCompile Include="Bst.cpp">
       <Filter>BST</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RedBlackTree.h">
+      <Filter>RedBlackTree</Filter>
+    </ClInclude>
     <ClInclude Include="Bst.h">
       <Filter>BST</Filter>
     </ClInclude>

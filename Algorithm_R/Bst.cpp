@@ -10,7 +10,7 @@ void SetCursorPosition(int x, int y)
 	::SetConsoleCursorPosition(output, pos);
 }
 
-void Bst::Print(Node* node, int x, int y)
+void Bst::Print(NodeB* node, int x, int y)
 {
 	if (node == nullptr)
 		return;
@@ -22,7 +22,7 @@ void Bst::Print(Node* node, int x, int y)
 	Print(node->right, x + (5 / (y + 1)), y + 1);
 }
 
-void Bst::Print_Inorder(Node* node)
+void Bst::Print_Inorder(NodeB* node)
 {
 	// 전위 순회 (preorder traverse)
 	// 중위 순회 (inorder)
@@ -39,7 +39,7 @@ void Bst::Print_Inorder(Node* node)
 }
 
 // 재귀로 찾는 함수
-Node* Bst::Search(Node* node, int data)
+NodeB* Bst::Search(NodeB* node, int data)
 {
 	if (node == nullptr || data == node->data)
 		return node;
@@ -52,7 +52,7 @@ Node* Bst::Search(Node* node, int data)
 
 // 그냥? 찾는 함수
 // 재귀보다 성능면에서 좋다.
-Node* Bst::Search2(Node* node, int data)
+NodeB* Bst::Search2(NodeB* node, int data)
 {
 	while (node && data != node->data)
 	{
@@ -65,7 +65,7 @@ Node* Bst::Search2(Node* node, int data)
 	return node;
 }
 
-Node* Bst::Min(Node* node)
+NodeB* Bst::Min(NodeB* node)
 {
 	while (node->left)
 		node = node->left;
@@ -73,7 +73,7 @@ Node* Bst::Min(Node* node)
 	return node;
 }
 
-Node* Bst::Max(Node* node)
+NodeB* Bst::Max(NodeB* node)
 {
 	while (node->right)
 		node = node->right;
@@ -81,12 +81,12 @@ Node* Bst::Max(Node* node)
 	return node;
 }
 
-Node* Bst::Next(Node* node)
+NodeB* Bst::Next(NodeB* node)
 {
 	if (node->right)
 		return Min(node->right);
 
-	Node* parent = node->parent;
+	NodeB* parent = node->parent;
 
 	while (parent && node == parent->right)
 	{
@@ -99,7 +99,7 @@ Node* Bst::Next(Node* node)
 
 void Bst::Insert(int data)
 {
-	Node* newNode = new Node();
+	NodeB* newNode = new NodeB();
 	newNode->data = data;
 	
 	if (!_root)
@@ -108,8 +108,8 @@ void Bst::Insert(int data)
 		return;
 	}
 
-	Node* node = _root;
-	Node* parent = nullptr;
+	NodeB* node = _root;
+	NodeB* parent = nullptr;
 
 	while (node)
 	{
@@ -130,11 +130,11 @@ void Bst::Insert(int data)
 
 void Bst::Delete(int data)
 {
-	Node* deleteNode = Search(_root, data);
+	NodeB* deleteNode = Search(_root, data);
 	Delete(deleteNode);
 }
 
-void Bst::Delete(Node* node)
+void Bst::Delete(NodeB* node)
 {
 	if (node == nullptr)
 		return;
@@ -144,7 +144,7 @@ void Bst::Delete(Node* node)
 		Replace(node, node->left);
 	else
 	{
-		Node* next = Next(node);
+		NodeB* next = Next(node);
 		node->data = next->data;
 		Delete(next);
 	}
@@ -153,7 +153,7 @@ void Bst::Delete(Node* node)
 
 // u 서브트리를 v 서브트리로 교체
 // 그리고 delete u
-void Bst::Replace(Node* u, Node* v)
+void Bst::Replace(NodeB* u, NodeB* v)
 {
 	if (!u->parent)
 		_root = v;

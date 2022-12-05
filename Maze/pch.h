@@ -6,6 +6,7 @@
 #include <vector>
 #include <queue>
 #include <map>
+#include <algorithm>
 using namespace std;
 
 struct Pos

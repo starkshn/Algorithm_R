@@ -1,10 +1,10 @@
 #pragma once
 
-struct Node
+struct NodeB
 {
-	Node*	parent = nullptr;
-	Node*	left = nullptr;
-	Node*	right = nullptr;
+	NodeB*	parent = nullptr;
+	NodeB*	left = nullptr;
+	NodeB*	right = nullptr;
 	int		data = {};
 };
 
@@ -12,23 +12,23 @@ class Bst
 {
 public:
 	void	Print() { Print(_root, 10, 0); }
-	void	Print(Node* node, int x, int y);
+	void	Print(NodeB* node, int x, int y);
 	void	Print_Inorder() { Print_Inorder(_root); }
-	void	Print_Inorder(Node* node);
+	void	Print_Inorder(NodeB* node);
 
-	Node*	Search(Node* node, int key);
-	Node*	Search2(Node* node, int key);
+	NodeB*	Search(NodeB* node, int key);
+	NodeB*	Search2(NodeB* node, int key);
 
-	Node*	Min(Node* node);
-	Node*	Max(Node* node);
-	Node*	Next(Node* node);
+	NodeB*	Min(NodeB* node);
+	NodeB*	Max(NodeB* node);
+	NodeB*	Next(NodeB* node);
 
 	void	Insert(int key);
 	void	Delete(int key);
-	void	Delete(Node* node);
-	void	Replace(Node* u, Node* v);
+	void	Delete(NodeB* node);
+	void	Replace(NodeB* u, NodeB* v);
 
 private:
-	Node* _root = nullptr;
+	NodeB* _root = nullptr;
 };
 

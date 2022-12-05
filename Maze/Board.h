@@ -30,10 +30,10 @@ public:
 	void			GenerateMap();
 
 public:
-	TILE_TYPE		GetTileType(POS pos);
-	ConsoleColor	GetTileColor(POS pos);
-	POS				GetEnterPos()	{ return POS{ 1, 1 }; };
-	POS				GetExitPos()	{ return POS{ _size - 2, _size - 2 }; };
+	TILE_TYPE		GetTileType(Pos pos);
+	ConsoleColor	GetTileColor(Pos pos);
+	Pos				GetEnterPos()	{ return Pos{ 1, 1 }; };
+	Pos				GetExitPos()	{ return Pos{ _size - 2, _size - 2 }; };
 	INT32			GetSize()		{ return _size; }
 
 private:

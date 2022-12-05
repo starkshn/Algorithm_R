@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Player.h"
 #include "Board.h"
+#include "AstarTest.h"
 #include <stack>
 
 void Player::Init(Board* board)
@@ -11,12 +12,21 @@ void Player::Init(Board* board)
 	// RightHand();
 	// BFS();
 	Astar();
-	
+
+	/*AstarTest a;
+	int32 size = p_board->GetSize();
+
+	Pos dest = p_board->GetExitPos();
+
+
+	a.AstarFunc(_pos, dest, size, p_board);
+
+	std::for_each(a._path.begin(), a._path.end(), [](Pos& pos) { std::cout << pos.y << pos.x << endl; });*/
 }
 
 void Player::Update(uint64 deltaTick)
 {
-	if (_pathIdx >= _path.size())
+	/*if (_pathIdx >= _path.size())
 	{
 		p_board->GenerateMap();
 		Init(p_board);
@@ -32,8 +42,10 @@ void Player::Update(uint64 deltaTick)
 		_pos = _path[_pathIdx];
 		++_pathIdx;
 	}
+	*/
 }
 
+#pragma region RightHand
 void Player::RightHand()
 {
 	Pos pos = _pos;
@@ -112,7 +124,10 @@ void Player::RightHand()
 	_path = path;
 
 }
+#pragma endregion
 
+
+#pragma region BFS
 void Player::BFS()
 {
 	Pos pos = _pos;
@@ -169,12 +184,12 @@ void Player::BFS()
 			parent[nextPos] = pos;
 		}
 	}
-	
+
 	_path.clear();
 
 	// 거꾸로 거슬러 올라간다
 	pos = dest;
-	
+
 	while (true)
 	{
 		_path.push_back(pos);
@@ -190,7 +205,10 @@ void Player::BFS()
 
 	cout << count << endl;
 }
+#pragma endregion
 
+
+#pragma region Astar
 struct PQNode
 {
 	bool operator < (const PQNode& other)  const { return f < other.f; }
@@ -253,16 +271,16 @@ void Player::Astar()
 
 	// 1) 예약(발견) 시스템 구현
 	// 2) 뒤늦게 더 좋은 경로가 발견될 수 있음 -> 예외 처리 필수
-	
+
 	// 초기값
 	{
 		int32 g = 0; // 시작점 -> 시작점이라 0.
 		int32 h = 10 * (std::abs(dest.y - start.y) + std::abs(dest.x - start.x));
-		pq.push(PQNode{g + h, g, start});
+		pq.push(PQNode{ g + h, g, start });
 		best[start.y][start.x] = g + h;
 		parent[start] = start;
 	}
-	
+
 	while (pq.empty() == false)
 	{
 		// 제일 좋은 후보를 찾는다.
@@ -271,7 +289,7 @@ void Player::Astar()
 
 		// 동일한 좌표를 여러 경로로 찾아서 
 		// 더 빠른 경로로 인해서 이미 방문(closed)된 경우 스킵. ( 이부분 누락하면 드라군이 왼쪽갔다 오른쪽갔다 와리가리침)
-		
+
 		// [선택] (중복된 부분 선택할 수 있는 방법 두가지)
 		if (closed[node.pos.y][node.pos.x])
 			continue;
@@ -304,14 +322,14 @@ void Player::Astar()
 
 			// 예약진행
 			best[nextPos.y][nextPos.x] = g + h;
-			pq.push(PQNode{g + h, g, nextPos});
+			pq.push(PQNode{ g + h, g, nextPos });
 			parent[nextPos] = node.pos;
 		}
 	}
 
 	// 거꾸로 거슬러 올라간다
 	Pos pos = dest;
-	
+
 	_path.clear();
 	_pathIdx = 0;
 
@@ -327,6 +345,9 @@ void Player::Astar()
 
 	std::reverse(_path.begin(), _path.end());
 }
+#pragma endregion
+
+
 
 
 bool Player::Cango(Pos pos)

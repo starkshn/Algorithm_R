@@ -7,6 +7,9 @@
     <Filter Include="Board">
       <UniqueIdentifier>{31dacee8-07ab-446b-8ba9-4813b4f3f59f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Astar">
+      <UniqueIdentifier>{7753091f-6ea3-448e-b5e1-905beb181c94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Maze.cpp">
@@ -24,6 +27,9 @@
     <ClCompile Include="Player.cpp">
       <Filter>Main</Filter>
     </ClCompile>
+    <ClCompile Include="AstarTest.cpp">
+      <Filter>Astar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -40,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="AstarTest.h">
+      <Filter>Astar</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

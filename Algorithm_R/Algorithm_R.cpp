@@ -4,7 +4,9 @@
 #include <queue>
 using namespace std;
 
+#include "RedBlackTree.h"
 #include "Bst.h"
+#include <thread>
 
 # pragma region ArrayQueue
 // [front][][][][][][][][][][][][back]
@@ -62,7 +64,6 @@ public:
 };
 #pragma endregion
 
-
 vector<bool>        v;
 vector<vector<int>> ad;
 vector<bool>        discovered;
@@ -91,7 +92,6 @@ void CreateGraph()
         {0, 0, 0, 0, 0, 0},
         {0, 0, 0, 0, 1, 0},
     };*/
-    
 }
 
 #pragma region DFS
@@ -123,6 +123,7 @@ void DFS(int here)
 }
 #pragma endregion
 
+#pragma region BFS
 void BFS(int here)
 {
     // 누구에게 발견되었는지?
@@ -133,7 +134,7 @@ void BFS(int here)
     queue<int> q;
     q.push(here);
     discovered[here] = true;
-    
+
     parent[here] = here;
     distance[here] = 0;
 
@@ -141,14 +142,14 @@ void BFS(int here)
     {
         here = q.front();
         q.pop();
-        
+
         cout << "Vistied : " << here << endl;
 
         for (int there : ad[here])
         {
             /*if (discovered[here][there] == 0)
                 continue;*/
-            
+
             if (discovered[there])
                 continue;
 
@@ -167,20 +168,48 @@ void BFS_ALL()
         if (discovered[i] == false)
             BFS(i);
 }
+#pragma endregion
 
 int main()
 {
-    Bst bst;
+    // Bst bst;
+
+
+    RedBlackTree bst;
 
     bst.Insert(30);
-    bst.Insert(20);
-    bst.Insert(35);
-    bst.Insert(15);
-    bst.Insert(33);
-    bst.Insert(40);
-
-    bst.Delete(30);
-
     bst.Print();
+    this_thread::sleep_for(1s);
+
+    bst.Insert(10);
+    bst.Print();
+    this_thread::sleep_for(1s);
+
+    bst.Insert(20);
+    bst.Print();
+    this_thread::sleep_for(1s);
+
+    bst.Insert(25);
+    bst.Print();
+    this_thread::sleep_for(1s);
+
+    bst.Insert(40);
+    bst.Print();
+    this_thread::sleep_for(1s);
+
+    bst.Insert(50);
+    bst.Print();
+    this_thread::sleep_for(1s);
+
+
+
+    //bst.Insert(30);
+    //bst.Insert(10);
+    //bst.Insert(20);
+    //bst.Insert(25);
+    //bst.Insert(40);
+    //bst.Insert(50);
+    //bst.Print();
+
 }
 

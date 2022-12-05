@@ -35,7 +35,9 @@ private:
 	vector<Pos>		_path;
 	int32			_pathIdx = 0;
 	uint64			_sumTick = 0;
-
+	
+public:
+	Board* GetGBoard() { return p_board; }
 
 	// queue<POS>	_path;
 };
