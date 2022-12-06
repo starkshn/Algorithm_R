@@ -14,7 +14,7 @@ void ConsoleHelper::SetCursorColor(ConsoleColor color)
 	::SetConsoleTextAttribute(output, static_cast<int16>(color));
 }
 
-void ConsoleHelper::ShowConsoleCursor(bool flag)
+void ConsoleHelper::ShowConsoleColor(bool flag)
 {
 	HANDLE output = ::GetStdHandle(STD_OUTPUT_HANDLE);
 	CONSOLE_CURSOR_INFO cursorInfo;

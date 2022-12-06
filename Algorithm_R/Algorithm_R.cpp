@@ -7,6 +7,8 @@ using namespace std;
 #include "RedBlackTree.h"
 #include "Bst.h"
 #include <thread>
+#include <list>
+
 
 # pragma region ArrayQueue
 // [front][][][][][][][][][][][][back]
@@ -68,7 +70,9 @@ vector<bool>        v;
 vector<vector<int>> ad;
 vector<bool>        discovered;
 
-void CreateGraph()
+std::vector<std::vector<int>>	adjacent;
+
+void CreateGraphList()
 {
     v.resize(6);
 
@@ -93,6 +97,66 @@ void CreateGraph()
         {0, 0, 0, 0, 1, 0},
     };*/
 }
+
+void CreateGraphVec()
+{
+    adjacent = std::vector<std::vector<int>>(6, std::vector<int>(6, -1));
+
+    adjacent[0][1] = 15;
+    adjacent[0][3] = 35;
+
+    adjacent[1][0] = 15;
+    adjacent[1][2] = 5;
+    adjacent[1][3] = 10;
+
+    adjacent[3][4] = 5;
+    adjacent[5][4] = 5;
+}
+
+
+#pragma region Binary Search
+template <typename T>
+concept Container = requires(T t)
+{
+    t.begin();
+    t.end();
+};
+
+template <typename T>
+requires Container<T>
+void BinarySearch(int v, std::vector<T> vec)
+{
+    int left = 0;
+    int right = vec.size() - 1;
+
+    int count = 0;
+
+    while (left <= right)
+    {
+        int mid = (left + right) / 2;
+
+        cout << "수행 횟수 : " << count << endl;
+        cout << "범위 : " << left << "~" << right << endl;
+
+        if (v < vec[mid])
+        {
+            right = mid - 1;
+        }
+        else if (v > vec[mid])
+        {
+            left = mid + 1;
+        }
+        else
+        {
+            cout << "find : " << v << endl;
+            break;
+        }
+
+        ++count;
+    }
+}
+#pragma endregion
+
 
 #pragma region DFS
 // DFS
@@ -170,39 +234,190 @@ void BFS_ALL()
 }
 #pragma endregion
 
+#pragma region Dijkstra
+void Dijkstra(int here)
+{
+    std::pair<int, int>				vertexCost;
+    std::list<std::pair<int, int>>	discovered;			// 발견 목록
+    std::vector<int>				best(6, INT32_MAX);	// 각 정점별로 지금까지 발견한 최소거리
+    std::vector<int>				parent(6, -1);
+
+    // discovered.push_back(std::make_pair(here, 0));
+    discovered.emplace_back(here, 0);
+
+    best[here] = 0;
+    parent[here] = here;
+
+    while (discovered.empty() == false)
+    {
+        // 제일 좋은 후보를 찾는다.
+        std::list<std::pair<int, int>>::iterator bestIter;
+        int bestCost = INT32_MAX;
+
+        for (auto iter = discovered.begin(); iter != discovered.end(); ++iter)
+        {
+            const int vertex = iter->first;
+            const int cost = iter->second;
+
+            if (cost < bestCost)
+            {
+                bestCost = cost;
+                bestIter = iter;
+            }
+        }
+
+        int cost = bestIter->second;
+        here = bestIter->first;
+        discovered.erase(bestIter);
+
+        // 방문? 더 짧은 경로를 뒤늦게 찾았다면 스킵.
+        if (best[here] < cost)
+            continue;
+
+        // 방문! (인접한 애들 다 등록을 해주어여한다)
+        for (int there = 0; there < 6; ++there)
+        {
+            // 연결되지 않았다면 스킵
+            if (adjacent[here][there] == -1)
+                continue;
+
+            // 더 좋은 경로를 과거에 찾았다면 스킵.
+            int nextCost = best[here] + adjacent[here][there];
+            if (nextCost >= best[there])
+                continue;
+
+            best[there] = nextCost;
+            parent[there] = here;
+
+            discovered.emplace_back(there, nextCost);
+        }
+    }
+}
+
+
+#pragma endregion
+
+#pragma region Sorting
+
+// 1) 버블 정렬 (Bubble Sort)
+void BubbleSort(vector<int>& v)
+{
+    const int n = (int)v.size();
+
+    // (N-1) + (N-2) + ... + 2 + 1
+    // 등차수열의 합 = N * (N-1) / 2
+    // O(N^2)
+    for (int i = 0; i < n - 1; i++)
+    {
+        for (int j = 0; j < (n - 1 - i); j++)
+        {
+            if (v[j] > v[j + 1])
+            {
+                std::swap(v[j+1], v[j]);
+            }
+        }
+    }
+}
+
+// [3][5][9][J][K]
+
+// 2) 선택 정렬 (Selection Sort)
+void SelectionSort(vector<int>& v)
+{
+    const int n = static_cast<int>(v.size());
+
+    for (int i = 0; i < n - 1; ++i)
+    {
+        int bestIdx = i;
+
+        for (int j = i + 1; j < n; ++j)
+        {
+            if (v[j] < v[bestIdx])
+                bestIdx = j;
+        }
+
+        std::swap(v[bestIdx], v[i]);
+    }
+}
+
+// 3) 삽입 정렬 (Insertion Sort)
+// 
+// i = 2
+// insertData = [5]
+// [5][4][9][K][3]
+// 
+void InsertionSort(vector<int>& v)
+{
+    const int n = static_cast<int>(v.size());
+
+    // O(N^2)
+    for (int i = 1; i < n; ++i)
+    {
+        int insertData = v[i]; // [5]
+
+        int j;
+        for (j = i - 1; j >= 0; --j)
+        {
+            if (v[j] > insertData)
+                std::swap(v[j + 1], v[j]);    // [5][4] => [5][5]
+            else
+                break;
+        }
+
+        // v[j + 1] = insertData;
+    }
+}
+
+#pragma endregion
+
+
 int main()
 {
+    // ###################################
+    // BST, Red-Black Tree
+    // 
     // Bst bst;
+    //RedBlackTree bst;
 
+    //bst.Insert(30);
+    //bst.Print();
+    //this_thread::sleep_for(1s);
 
-    RedBlackTree bst;
+    //bst.Insert(10);
+    //bst.Print();
+    //this_thread::sleep_for(1s);
 
-    bst.Insert(30);
-    bst.Print();
-    this_thread::sleep_for(1s);
+    //bst.Insert(20);
+    //bst.Print();
+    //this_thread::sleep_for(1s);
 
-    bst.Insert(10);
-    bst.Print();
-    this_thread::sleep_for(1s);
-
-    bst.Insert(20);
-    bst.Print();
-    this_thread::sleep_for(1s);
-
-    bst.Insert(25);
-    bst.Print();
-    this_thread::sleep_for(1s);
-
-    bst.Insert(40);
-    bst.Print();
-    this_thread::sleep_for(1s);
-
-    bst.Insert(50);
-    bst.Print();
-    this_thread::sleep_for(1s);
+    //bst.Insert(25);
+    //bst.Print();
+    //this_thread::sleep_for(1s);
 
 
 
+    //bst.Delete(20);
+    //bst.Print();
+    //this_thread::sleep_for(1s);
+
+    //bst.Delete(10);
+    //bst.Print();
+    //this_thread::sleep_for(1s);
+
+    std::vector<int> vec;
+    vec.push_back(30);
+    vec.push_back(20);
+    vec.push_back(10);
+    vec.push_back(40);
+    vec.push_back(70);
+    vec.push_back(50);
+
+    // BubbleSort(vec);
+    SelectionSort(vec);
+    // InsertionSort(vec);
+   
+    int a = 10;
     //bst.Insert(30);
     //bst.Insert(10);
     //bst.Insert(20);
@@ -210,6 +425,6 @@ int main()
     //bst.Insert(40);
     //bst.Insert(50);
     //bst.Print();
-
+    // ###################################
 }
 

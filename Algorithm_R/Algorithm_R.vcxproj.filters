@@ -11,6 +11,9 @@
     <Filter Include="RedBlackTree">
       <UniqueIdentifier>{9b0e7c18-6236-458b-a945-bb1b8238b189}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sort">
+      <UniqueIdentifier>{6ad5f703-7b88-4c13-94c0-ea32f4dc606c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Algorithm_R.cpp">
@@ -22,34 +25,10 @@
     <ClCompile Include="BFS_Test1.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Dijkstra.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="P.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="BFS_Test2.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Dijkstra_2.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="P_2.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Priority.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="a1.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="weak_ptr_test.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="PQ.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="B_Search.cpp">
+    <ClCompile Include="PriorityQueue.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="RedBlackTree.cpp">

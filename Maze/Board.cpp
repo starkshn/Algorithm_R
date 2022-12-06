@@ -24,7 +24,7 @@ void Board::Render()
 {
 	// Renderings
 	ConsoleHelper::SetCursorPosition(0, 0);
-	ConsoleHelper::ShowConsoleCursor(false);
+	ConsoleHelper::ShowConsoleColor(false);
 
 	for (int32 y = 0; y < _size; ++y)
 	{
