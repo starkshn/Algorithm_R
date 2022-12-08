@@ -157,7 +157,6 @@ void BinarySearch(int v, std::vector<T> vec)
 }
 #pragma endregion
 
-
 #pragma region DFS
 // DFS
 void DFS(int here)
@@ -524,78 +523,52 @@ void MergeSort(vector<int>& v, int left, int right)
     MergeResult(v, left, mid, right);
 }
 
+#include <time.h>
 
+
+// Quick Sort
+int Partition(std::vector<int>& v, int left, int right)
+{
+    int pivotData = v[left];
+    int pLeft = left + 1;
+    int pRight = right;
+
+    while (pLeft <= pRight)
+    {
+        while (pLeft <= right && pivotData >= v[pLeft])
+            ++pLeft;
+        
+        while (pRight >= left + 1 && pivotData <= v[pRight])
+            --pRight;
+
+        if (pLeft < pRight)
+            std::swap(v[pLeft], v[pRight]);        
+    }
+
+    std::swap(v[left], v[pLeft]);
+    return pLeft;
+}
+
+void QuickSort(std::vector<int>& v, int left, int right)
+{
+    if (left > right)
+        return;
+
+    int pivotIdx = Partition(v, left, right);
+    QuickSort(v, left, pivotIdx - 1);
+    QuickSort(v, pivotIdx + 1, right);
+}
 #pragma endregion
 
 
 int main()
 {
-    // ###################################
-    // BST, Red-Black Tree
-    // 
-    // Bst bst;
-    //RedBlackTree bst;
+    srand(time(nullptr));
 
-    //bst.Insert(30);
-    //bst.Print();
-    //this_thread::sleep_for(1s);
+    std::vector<int> vec = { 3, 1, 5, 6, 8, 9, 12, 10 };
 
-    //bst.Insert(10);
-    //bst.Print();
-    //this_thread::sleep_for(1s);
+    QuickSort(vec, 0, vec.size() - 1); 
 
-    //bst.Insert(20);
-    //bst.Print();
-    //this_thread::sleep_for(1s);
-
-    //bst.Insert(25);
-    //bst.Print();
-    //this_thread::sleep_for(1s);
-
-
-
-    //bst.Delete(20);
-    //bst.Print();
-    //this_thread::sleep_for(1s);
-
-    //bst.Delete(10);
-    //bst.Print();
-    //this_thread::sleep_for(1s);
-
-    std::vector<int> vec;
-    vec.push_back(30);
-    vec.push_back(90);
-    vec.push_back(80);
-    vec.push_back(40);
-    vec.push_back(70);
-    vec.push_back(60);
-    vec.push_back(10);
-    vec.push_back(50);
-    vec.push_back(20);
-    vec.push_back(100);
-
-   
-    
-    //bst.Insert(30);
-    //bst.Insert(10);
-    //bst.Insert(20);
-    //bst.Insert(25);
-    //bst.Insert(40);
-    //bst.Insert(50);
-    //bst.Print();
-    // ###################################
-
-
-    // BubbleSort(vec);
-    // SelectionSort2(vec);
-    // InsertionSort(vec);
-    // MergeSort(vec, 0, vec.size() - 1);
-    std::vector<int> vec1 = { 1, 3, 5, 7, 9 };
-    std::vector<int> vec2 = { 2, 4, 6, 8, 10 };
-
-    std::vector<int> vec3 = MergeFunc(vec1, vec2);
-
-    int a = 10;
-    
+    return 0;
 }
 
