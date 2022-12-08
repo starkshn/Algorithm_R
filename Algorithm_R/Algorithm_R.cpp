@@ -417,9 +417,48 @@ void HeapSort(vector<int>& v)
 // [3] [K] [7] [2] [J] [4] [8] [9]	1개 * 8
 // [3][K] [2][7]  [4][J]  [8][9]	2개 * 4
 
-vector<int> Merge(vector<int> a, vector<int> b)
+
+// 이미 정렬이 되어있는 vec1, vec2를 하나의 벡터에 정렬된 상태로 만들어라.
+vector<int> MergeFunc(vector<int>& vec1, vector<int>& vec2)
 {
     vector<int> temp;
+
+    int leftVecIdx = 0;
+    int rightVecIdx = 0;      // vec2의 시작 Idx
+
+    int leftVecMaxIdx = vec1.size() - 1;
+    int rightVecMaxIdx = leftVecMaxIdx + vec2.size();
+
+    temp.reserve(vec1.size() + vec2.size());
+    
+    while (leftVecIdx <= leftVecMaxIdx && rightVecIdx <= rightVecMaxIdx)
+    {
+        if (vec1[leftVecIdx] <= vec2[rightVecIdx])
+        {
+            temp.push_back(vec1[leftVecIdx++]);
+        }
+        else
+        {
+            temp.push_back(vec2[rightVecIdx++]);
+        }
+    }
+    
+    // 먼저 빠져 나온 경우
+    if (leftVecIdx > leftVecMaxIdx)
+    {
+        while (rightVecIdx > rightVecMaxIdx)
+        {
+            temp.push_back(vec2[rightVecIdx++]);
+        }
+    }
+    
+    if (rightVecIdx > rightVecMaxIdx)
+    {
+        while (leftVecIdx > leftVecMaxIdx)
+        {
+            temp.push_back(vec1[leftVecIdx++]);
+        }
+    }
 
     return temp;
 }
@@ -427,13 +466,12 @@ vector<int> Merge(vector<int> a, vector<int> b)
 // O(NlogN)
 void MergeResult(vector<int>& v, int left, int mid, int right)
 {
-    // [2][3][7][K][4][8][9][J]
-    //          [l]            [r]
     int leftIdx = left;
     int rightIdx = mid + 1;
 
-    // [2]
     vector<int> temp;
+
+    cout << "Left : " << left << " " << "Mid : " << mid << " " << "Right : " << right << " " << "에 대해서 Merge 중!" << endl;
 
     while (leftIdx <= mid && rightIdx <= right)
     {
@@ -478,9 +516,11 @@ void MergeSort(vector<int>& v, int left, int right)
         return;
 
     int mid = (left + right) / 2;
+
+    cout << "Left : " << left << " " << "Mid : " << mid << " " << "Right : " << right << " " << "에 대해서 진행!" << endl;
+
     MergeSort(v, left, mid);
     MergeSort(v, mid + 1, right);
-
     MergeResult(v, left, mid, right);
 }
 
@@ -524,17 +564,18 @@ int main()
 
     std::vector<int> vec;
     vec.push_back(30);
-    vec.push_back(20);
-    vec.push_back(10);
+    vec.push_back(90);
+    vec.push_back(80);
     vec.push_back(40);
     vec.push_back(70);
+    vec.push_back(60);
+    vec.push_back(10);
     vec.push_back(50);
+    vec.push_back(20);
+    vec.push_back(100);
 
-    // BubbleSort(vec);
-    SelectionSort2(vec);
-    // InsertionSort(vec);
    
-    int a = 10;
+    
     //bst.Insert(30);
     //bst.Insert(10);
     //bst.Insert(20);
@@ -543,5 +584,18 @@ int main()
     //bst.Insert(50);
     //bst.Print();
     // ###################################
+
+
+    // BubbleSort(vec);
+    // SelectionSort2(vec);
+    // InsertionSort(vec);
+    // MergeSort(vec, 0, vec.size() - 1);
+    std::vector<int> vec1 = { 1, 3, 5, 7, 9 };
+    std::vector<int> vec2 = { 2, 4, 6, 8, 10 };
+
+    std::vector<int> vec3 = MergeFunc(vec1, vec2);
+
+    int a = 10;
+    
 }
 
