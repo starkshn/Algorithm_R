@@ -417,13 +417,14 @@ void HeapSort(vector<int>& v)
 // [3][K] [2][7]  [4][J]  [8][9]	2개 * 4
 
 
+// 테스트 문제 (병합 정렬)
 // 이미 정렬이 되어있는 vec1, vec2를 하나의 벡터에 정렬된 상태로 만들어라.
 vector<int> MergeFunc(vector<int>& vec1, vector<int>& vec2)
 {
     vector<int> temp;
 
     int leftVecIdx = 0;
-    int rightVecIdx = 0;      // vec2의 시작 Idx
+    int rightVecIdx = 0;
 
     int leftVecMaxIdx = vec1.size() - 1;
     int rightVecMaxIdx = leftVecMaxIdx + vec2.size();
@@ -545,8 +546,8 @@ int Partition(std::vector<int>& v, int left, int right)
             std::swap(v[pLeft], v[pRight]);        
     }
 
-    std::swap(v[left], v[pLeft]);
-    return pLeft;
+    std::swap(v[left], v[pRight]);
+    return pRight;
 }
 
 void QuickSort(std::vector<int>& v, int left, int right)
@@ -560,14 +561,135 @@ void QuickSort(std::vector<int>& v, int left, int right)
 }
 #pragma endregion
 
+#pragma region Disjoint  Set
+
+// 그래프/트리 응용
+// 오늘의 주제 : 최소 스패닝 트리 (Minimum Spanning Tree)
+
+// 상호 배타적 집합 (Disjoint Set)
+// -> 유니온-파인드 Union-Find (합치기-찾기)
+
+// Lineage Battleground (혼종!)
+// 혈맹전 + 서바이벌
+// 1인 팀 1000명 (팀id 0~999)
+// 동맹 (1번팀 + 2번팀 = 1번팀)
+
+void LineageBattleground()
+{
+    struct User
+    {
+        int teamId;
+        // TODO
+    };
+    
+    // TODO : UserManager
+    std::vector<User> users;
+    for (int i = 0; i < 1000; ++i)
+    {
+        users.push_back(User{ i });
+    }
+
+    // 팀 동맹
+    // users[1] <-> users[5]
+    users[5].teamId = users[1].teamId;
+
+    // [0][1][2][3][4]....[999]
+    // [1][1][1][1][1]...[2][2][2][2]...[999]
+    
+    // teamId = 1인 팀과 teamId = 2인 팀이 통함
+    for (User& user : users)
+    {
+        if (user.teamId == 1)
+            user.teamId = 2;
+    }
+
+    // 찾기 연산 O(1)
+    // 합치기 연산 O(N)
+}
+
+// 조직 폭력배 구조?
+// [1]		[3]
+// [2]	 [4][5]
+//			[0]
+
+// 시간 복잡도 : 트리의 높이에 비례한 시간이 걸림
+
+class DisjointSet
+{
+public:
+    DisjointSet(int n) : _parent(n), _rank(n, 1) 
+    // std::vector's size => n
+    {
+        for (int i = 0; i < n; ++i)
+        {
+            _parent[i] = i;
+        }
+    }
+
+    // 조직 폭력배 구조?
+    // [1]		[3]
+    // [2]	 [4][5][0]
+    // 	
+
+    // 니 대장이 누구니?
+    int Find(int u)
+    {
+        if (u == _parent[u])
+            return u;
+
+        // _parent[u] = Find(_parent[u]);
+        // return _parent[u];
+
+        return _parent[u] = Find(_parent[u]);
+    }
+
+    // u와 v를 합친다 (일단 u가 v 밑으로)
+    void Merge(int u, int v)
+    {
+        u = Find(u);
+        v = Find(v);
+
+        if (u == v)
+            return;
+        
+        if (_rank[u] > _rank[v])
+            std::swap(u, v);
+
+        // rank[u] <= rank[v] 보장됨
+        _parent[u] = v;
+        
+        if (_rank[u] == _rank[v])
+            ++_rank[v];
+    }
+
+private:
+    std::vector<int> _parent;
+    std::vector<int> _rank;
+};
+
+#pragma endregion
+
+
+
 
 int main()
 {
-    srand(time(nullptr));
+    DisjointSet teams(1000);
 
-    std::vector<int> vec = { 3, 1, 5, 6, 8, 9, 12, 10 };
+    teams.Merge(10, 1);
+    int teamId = teams.Find(1);
+    int teamId2 = teams.Find(10);
+    // teamId = 1, teamId2 = 1
 
-    QuickSort(vec, 0, vec.size() - 1); 
+    teams.Merge(3, 2);
+    int teamId3 = teams.Find(3);
+    int teamId4 = teams.Find(2);
+    // teamId3 = 2, teamId4 = 2
+
+    teams.Merge(1, 3);
+    int teamId6 = teams.Find(1);
+    int teamId7 = teams.Find(3);
+    // teamId6 = 2, teamId7 = 2
 
     return 0;
 }
