@@ -70,7 +70,7 @@ vector<bool>        v;
 vector<vector<int>> ad;
 vector<bool>        discovered;
 
-std::vector<std::vector<int>>	adjacent;
+std::vector<std::vector<int>>	adjacentK;
 
 void CreateGraphList()
 {
@@ -100,17 +100,17 @@ void CreateGraphList()
 
 void CreateGraphVec()
 {
-    adjacent = std::vector<std::vector<int>>(6, std::vector<int>(6, -1));
+    adjacentK = std::vector<std::vector<int>>(6, std::vector<int>(6, -1));
 
-    adjacent[0][1] = 15;
-    adjacent[0][3] = 35;
+    adjacentK[0][1] = 15;
+    adjacentK[0][3] = 35;
 
-    adjacent[1][0] = 15;
-    adjacent[1][2] = 5;
-    adjacent[1][3] = 10;
+    adjacentK[1][0] = 15;
+    adjacentK[1][2] = 5;
+    adjacentK[1][3] = 10;
 
-    adjacent[3][4] = 5;
-    adjacent[5][4] = 5;
+    adjacentK[3][4] = 5;
+    adjacentK[5][4] = 5;
 }
 
 
@@ -277,11 +277,11 @@ void Dijkstra(int here)
         for (int there = 0; there < 6; ++there)
         {
             // 연결되지 않았다면 스킵
-            if (adjacent[here][there] == -1)
+            if (adjacentK[here][there] == -1)
                 continue;
 
             // 더 좋은 경로를 과거에 찾았다면 스킵.
-            int nextCost = best[here] + adjacent[here][there];
+            int nextCost = best[here] + adjacentK[here][there];
             if (nextCost >= best[there])
                 continue;
 
@@ -561,7 +561,7 @@ void QuickSort(std::vector<int>& v, int left, int right)
 }
 #pragma endregion
 
-#pragma region Disjoint  Set
+#pragma region Disjoint Set(DSU)
 
 // 그래프/트리 응용
 // 오늘의 주제 : 최소 스패닝 트리 (Minimum Spanning Tree)
@@ -604,7 +604,7 @@ void LineageBattleground()
     }
 
     // 찾기 연산 O(1)
-    // 합치기 연산 O(N)
+    // 합치기 연산 O(N) 이렇게 때문에 DSU를 사용을 하는 것이다.
 }
 
 // 조직 폭력배 구조?
@@ -669,27 +669,111 @@ private:
 
 #pragma endregion
 
+#pragma region Kruskal
+
+struct Vertex
+{
+    // int data;
+};
+
+std::vector<Vertex> vertices_K;
+std::vector<std::vector<int>> adjacent_K;
+
+void CreateGraph_K()
+{
+    vertices_K.resize(6);
+    adjacent_K = std::vector<std::vector<int>>(6, std::vector<int>(6, -1));
+
+    adjacent_K[0][1] = adjacent_K[1][0] = 15;
+    adjacent_K[0][3] = adjacent_K[3][0] = 35;
+    adjacent_K[1][2] = adjacent_K[2][1] = 5;
+    adjacent_K[1][3] = adjacent_K[3][1] = 10;
+    adjacent_K[3][4] = adjacent_K[4][3] = 5;
+    adjacent_K[3][5] = adjacent_K[5][3] = 10;
+    adjacent_K[5][4] = adjacent_K[4][5] = 5;
+}
+
+struct CostEdge
+{
+    int cost;
+    int u;
+    int v;
+
+    bool operator < (CostEdge& other)
+    {
+        return cost < other.cost;
+    }
+};
+
+int Kruskal(vector<CostEdge>& selected)
+{
+    int ret = 0;
+
+    selected.clear();
+
+    vector<CostEdge> edges;
+
+    for (int u = 0; u < adjacent_K.size(); ++u)
+    {
+        for (int v = 0; v < adjacent_K.size(); ++v)
+        {
+            if (u > v)
+                continue;
+
+            int cost = adjacent_K[u][v];
+            if (cost == -1)
+                continue;
+
+            edges.push_back(CostEdge{cost, u, v});
+        }
+    }
+
+    std::sort(edges.begin(), edges.end());
+
+    DisjointSet sets (vertices_K.size());
+
+    for (CostEdge& edge : edges)
+    {
+        // 같은 그룹이라면은 스킵.(안 그러면 사이클 발생)
+        if (sets.Find(edge.u) == sets.Find(edge.v))
+            continue;
+
+        // 두 그룹을 합친다
+        sets.Merge(edge.u, edge.v);
+        selected.push_back(edge);
+        ret += edge.cost;
+    }
+
+    return ret;
+}
+
+#pragma endregion
 
 
 
 int main()
 {
-    DisjointSet teams(1000);
+    //DisjointSet teams(1000);
 
-    teams.Merge(10, 1);
-    int teamId = teams.Find(1);
-    int teamId2 = teams.Find(10);
-    // teamId = 1, teamId2 = 1
+    //teams.Merge(10, 1);
+    //int teamId = teams.Find(1);
+    //int teamId2 = teams.Find(10);
+    //// teamId = 1, teamId2 = 1
 
-    teams.Merge(3, 2);
-    int teamId3 = teams.Find(3);
-    int teamId4 = teams.Find(2);
-    // teamId3 = 2, teamId4 = 2
+    //teams.Merge(3, 2);
+    //int teamId3 = teams.Find(3);
+    //int teamId4 = teams.Find(2);
+    //// teamId3 = 2, teamId4 = 2
 
-    teams.Merge(1, 3);
-    int teamId6 = teams.Find(1);
-    int teamId7 = teams.Find(3);
-    // teamId6 = 2, teamId7 = 2
+    //teams.Merge(1, 3);
+    //int teamId6 = teams.Find(1);
+    //int teamId7 = teams.Find(3);
+    //// teamId6 = 2, teamId7 = 2
+
+    CreateGraph_K();
+
+    std::vector<CostEdge> s;
+    int cost = Kruskal(s);
 
     return 0;
 }

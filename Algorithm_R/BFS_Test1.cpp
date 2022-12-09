@@ -6,20 +6,20 @@
 using namespace std;
 
 vector<bool>		discovered;
-vector<vector<int>> adjacent;
+vector<vector<int>> adjacentK;
 
 void CreateGraph()
 {
-	adjacent = vector<vector<int>>(6);
+	adjacentK = vector<vector<int>>(6);
 	discovered.resize(6);
 
-	adjacent[0].push_back(1);
-	adjacent[0].push_back(3);
-	adjacent[1].push_back(0);
-	adjacent[1].push_back(2);
-	adjacent[1].push_back(3);
-	adjacent[3].push_back(4);
-	adjacent[5].push_back(4);
+	adjacentK[0].push_back(1);
+	adjacentK[0].push_back(3);
+	adjacentK[1].push_back(0);
+	adjacentK[1].push_back(2);
+	adjacentK[1].push_back(3);
+	adjacentK[3].push_back(4);
+	adjacentK[5].push_back(4);
 }
 
 void BFS(int here)
@@ -41,7 +41,7 @@ void BFS(int here)
 
 		cout << "Visited : " << here << endl;
 		
-		for (int there : adjacent[here])
+		for (int there : adjacentK[here])
 		{
 			if (discovered[there])
 				continue;
