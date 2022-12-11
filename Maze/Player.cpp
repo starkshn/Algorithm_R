@@ -26,7 +26,7 @@ void Player::Init(Board* board)
 
 void Player::Update(uint64 deltaTick)
 {
-	/*if (_pathIdx >= _path.size())
+	if (_pathIdx >= _path.size())
 	{
 		p_board->GenerateMap();
 		Init(p_board);
@@ -34,15 +34,13 @@ void Player::Update(uint64 deltaTick)
 	}
 
 	_sumTick += deltaTick;
-	
 	if (_sumTick >= MOVE_TICK)
 	{
 		_sumTick = 0;
 
 		_pos = _path[_pathIdx];
 		++_pathIdx;
-	}
-	*/
+	}	
 }
 
 #pragma region RightHand

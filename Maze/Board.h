@@ -17,6 +17,18 @@ enum class TILE_TYPE
 	
 };
 
+struct CostEdge
+{
+	int cost;
+	Pos u;
+	Pos v;
+
+	bool operator < (const CostEdge& other) const
+	{
+		return cost < other.cost;
+	}
+};
+
 class Board
 {
 public:

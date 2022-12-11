@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Board.h"
 #include "Player.h"
+#include "DisjointSet.h"
 
 const char* tile = "■";
 
@@ -53,39 +54,49 @@ void Board::GenerateMap()
 		}
 	}
 
-	// 랜덤으로 우측 혹은 아래로 길을 뚫는 작업
+	std::vector<CostEdge> edges;
+
+	// edges 후보를 랜덤 cost로 등록한다.
 	for (int32 y = 0; y < _size; ++y)
 	{
 		for (int32 x = 0; x < _size; ++x)
 		{
-			if (x % 2 == 0 || y % 2 == 0)
-				continue;
-
-			if (x == _size - 2 && y == _size - 2)
-				continue;
-
-			if (y == _size - 2)
-			{
-				_tile[y][x + 1] = TILE_TYPE::EMPTY;
-				continue;
-			}
-
-			if (x == _size - 2)
-			{
-				_tile[y + 1][x] = TILE_TYPE::EMPTY;
-				continue;
-			}
+			if (x % 2 == 0 || y % 2 == 0) continue;
 			
-			const int ranValue = ::rand() % 2;
-			if (ranValue == 0)
+			// 우측 연결하는 간선후보
+			if (x < _size - 2)
 			{
-				_tile[y][x + 1] = TILE_TYPE::EMPTY;
+				const int32 randValue = ::rand() % 100;
+				edges.emplace_back(CostEdge{ randValue, Pos{ y, x }, Pos{ y, x + 2 }});
 			}
-			else
+
+			// 아래로 연결하는 간선후보
+			if (y < _size - 2)
 			{
-				_tile[y + 1][x] = TILE_TYPE::EMPTY;
+				const int32 randValue = ::rand() % 100;
+				edges.emplace_back(CostEdge{ randValue, Pos{ y, x }, Pos{ y + 2, x } });
 			}
 		}
+	}
+
+	std::sort(edges.begin(), edges.end());
+
+	DisjointSet sets(_size * _size);
+
+	for (CostEdge& edge : edges)
+	{
+		int32 u = edge.u.y * _size + edge.u.x;
+		int32 v = edge.v.y * _size + edge.v.x;
+
+		// 같은 그룹이라면은 스킵 (안그러면 사이클 발생)
+		if (sets.Find(u) == sets.Find(v)) continue;
+
+		// 두 그룹을 합친다.
+		sets.Merge(u, v);
+
+		int32 y = (edge.u.y + edge.v.y) / 2;
+		int32 x = (edge.u.x + edge.v.x) / 2;
+		_tile[y][x] = TILE_TYPE::EMPTY;
 	}
 }
 

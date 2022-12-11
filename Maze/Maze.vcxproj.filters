@@ -30,6 +30,9 @@
     <ClCompile Include="AstarTest.cpp">
       <Filter>Astar</Filter>
     </ClCompile>
+    <ClCompile Include="DisjointSet.cpp">
+      <Filter>Board</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -49,6 +52,9 @@
     </ClInclude>
     <ClInclude Include="AstarTest.h">
       <Filter>Astar</Filter>
+    </ClInclude>
+    <ClInclude Include="DisjointSet.h">
+      <Filter>Board</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
