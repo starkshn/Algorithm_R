@@ -1,4 +1,5 @@
 #include <iostream>
+#include <istream>
 #include <vector>
 #include <stack>
 #include <queue>
@@ -7,6 +8,8 @@
 #include "RedBlackTree.h"
 #include "Bst.h"
 #include <thread>
+#include <Windows.h>
+#include <string>
 using namespace std;
 
 #pragma region DFS
@@ -188,9 +191,11 @@ void Dijikstra(int here)
             
             int nextCost = best[here] + a_D[here][there];
 
-            if (nextCost >= best[there]) continue;
-
-            std::cout << "후보 : " << here << " => " << there << " " << "점수 : " << a_D[here][there] << " " << "점수 : " << nextCost << endl;
+            if (nextCost >= best[there])
+            {
+                std::cout << "후보 : " << here << " => " << there << " " << "점수 : " << a_D[here][there] << " " << "후보 이지만 탈락!" << endl;
+                continue;
+            }
 
             best[there] = nextCost;
             parent[there] = here;
@@ -198,7 +203,6 @@ void Dijikstra(int here)
 
             std::cout << "발견한 부분에 넣은거 : " << a_D[here][there] << " " << "점수 : " << nextCost << endl;
         }
-
         cout << endl;
     }
 }
@@ -480,8 +484,8 @@ private:
 
 #pragma region Kruskal
 
-std::vector<Vertex> vertices_Kruskal;
-std::vector<std::vector<int>> adjacent_Kruskal;
+std::vector<Vertex>             vertices_Kruskal;
+std::vector<std::vector<int>>   adjacent_Kruskal;
 
 void CreateGraph_Kruskal()
 {
@@ -522,8 +526,7 @@ int Kruskal(T& selected) requires Container<T>
     {
         for (int v = 0; v < adjacent_Kruskal.size(); ++v)
         {
-            if (u > v) continue;
-
+            if (u > v) continue; // 중복 스킵
             int cost = adjacent_Kruskal[u][v];
             if (cost == -1) continue;
 
@@ -535,7 +538,7 @@ int Kruskal(T& selected) requires Container<T>
 
     DisjointSet sets (vertices_Kruskal.size());
 
-    for (CostEdges edge : edges)
+    for (CostEdge& edge : edges)
     {
         if (sets.Find(edge.u) == sets.Find(edge.v)) continue;
 
@@ -549,7 +552,24 @@ int Kruskal(T& selected) requires Container<T>
 
 #pragma endregion
 
+#pragma region DP
 
+// 메모이제이션 (memoization)
+int cache[50][50];
+
+int Combination(int n, int r)
+{
+    // 기저 사례
+    if (r == 0 || n == r) return 1;
+
+    // 이미 답을 구한 적이 있으면 바로 반환
+    int& ret = cache[n][r];
+    if (ret != -1) return ret;
+
+    return Combination(n - 1, r - 1) + Combination(n - 1, r);
+}
+
+#pragma endregion
 
 int main()
 {
@@ -588,9 +608,21 @@ int main()
     //int teamId6 = teams.Find(1);
     //int teamId7 = teams.Find(3);
 
+    /*CreateGraph_Kruskal();
     std::vector<CostEdge> s;
-    int cost = Kruskal(s);
+    int cost = Kruskal(s);*/
 
+    ::memset(cache, -1, sizeof(cache));
 
+    __int64 start = GetTickCount64();
+
+    int lotto = Combination(45, 6);
+
+    __int64 end = GetTickCount64();
+
+    std::cout << end - start << " ms" << std::endl;
+
+    
+    
     return 0;
 }

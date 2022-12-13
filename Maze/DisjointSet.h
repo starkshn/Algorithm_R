@@ -44,7 +44,7 @@ public:
 			_rank[v]++;
 	}
 
-private:
+public:
 	vector<int> _parent;
 	vector<int> _rank;
 };

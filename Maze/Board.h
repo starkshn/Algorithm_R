@@ -17,18 +17,6 @@ enum class TILE_TYPE
 	
 };
 
-struct CostEdge
-{
-	int cost;
-	Pos u;
-	Pos v;
-
-	bool operator < (const CostEdge& other) const
-	{
-		return cost < other.cost;
-	}
-};
-
 class Board
 {
 public:
@@ -39,7 +27,8 @@ public:
 	void			Init(INT32 size, Player* player);
 	void			Render();
 
-	void			GenerateMap();
+	void			GenerateMap_Kruskal();
+	void			GenerateMap_Prim();
 
 public:
 	TILE_TYPE		GetTileType(Pos pos);
