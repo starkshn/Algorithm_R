@@ -210,9 +210,6 @@ void BFS(int here)
 
         for (int there : ad[here])
         {
-            /*if (discovered[here][there] == 0)
-                continue;*/
-
             if (discovered[there])
                 continue;
 
@@ -750,31 +747,4 @@ int Kruskal(vector<CostEdge>& selected)
 #pragma endregion
 
 
-
-int main()
-{
-    //DisjointSet teams(1000);
-
-    //teams.Merge(10, 1);
-    //int teamId = teams.Find(1);
-    //int teamId2 = teams.Find(10);
-    //// teamId = 1, teamId2 = 1
-
-    //teams.Merge(3, 2);
-    //int teamId3 = teams.Find(3);
-    //int teamId4 = teams.Find(2);
-    //// teamId3 = 2, teamId4 = 2
-
-    //teams.Merge(1, 3);
-    //int teamId6 = teams.Find(1);
-    //int teamId7 = teams.Find(3);
-    //// teamId6 = 2, teamId7 = 2
-
-    CreateGraph_K();
-
-    std::vector<CostEdge> s;
-    int cost = Kruskal(s);
-
-    return 0;
-}
 

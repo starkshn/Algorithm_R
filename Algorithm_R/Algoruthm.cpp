@@ -571,6 +571,87 @@ int Combination(int n, int r)
 
 #pragma endregion
 
+#pragma region LIS
+
+int cache_LIS[50];
+vector<int> seq;
+
+int LIS(int pos)
+{
+    // 기저사항
+
+    // 캐시 확인
+    int& ret = cache_LIS[pos];
+    if (ret != -1)
+        return ret;
+
+    // 최소 seq[pos]는 있으니 1부터 시작
+    ret = 1;
+
+    // seq = { 1, 9, 2, 5, 7 };
+    // 1 9
+    // 1 2
+    // 1 5
+    // 1 7
+
+    // 구하기
+    for (int next = pos + 1; next < seq.size(); ++next)
+        if (seq[pos] < seq[next])
+            ret = max(ret, 1 + LIS(next));
+
+    return ret;
+}
+
+#pragma endregion
+
+#pragma region Triangle Path
+// 오늘의 주제 : 동적 계획법 (DP)
+// TRIANGLE_PATH
+// - (0,0)부터 시작해서 아래 or 아래우측으로 이동 가능
+// - 만나는 숫자를 모두 더함
+// - 더한 숫자가 최대가 되는 경로? 합?
+
+// 6
+// 1 2
+// 3 7 4
+// 9 4 1 7
+// 2 7 5 9 4
+
+int N;
+vector<vector<int>> board_TP;
+vector<vector<int>> cache_TP;
+vector<vector<int>> nextX_TP;
+
+int path(int y, int x)
+{
+    if (y == N) return 0;
+    
+    // 캐시확인
+    int& ret = cache_TP[y][x];
+    if (ret != -1) return ret;
+
+    // 경로 기록
+    {
+        int nextBottom = path(y + 1, x);
+        int nextBottomRight = path(y + 1, x + 1);
+        if (nextBottom > nextBottomRight)
+            nextX_TP[y][x] = x;
+        else
+            nextX_TP[y][x] = x + 1;
+    }
+
+    // 적용
+    return ret = board_TP[y][x] + max(path(y + 1, x), path(y + 1, x + 1));
+
+    return 1;
+}
+
+
+
+#pragma endregion
+
+
+
 int main()
 {
     // CreateGraph_DFS();
@@ -612,7 +693,8 @@ int main()
     std::vector<CostEdge> s;
     int cost = Kruskal(s);*/
 
-    ::memset(cache, -1, sizeof(cache));
+    // DP
+    /*::memset(cache, -1, sizeof(cache));
 
     __int64 start = GetTickCount64();
 
@@ -620,9 +702,47 @@ int main()
 
     __int64 end = GetTickCount64();
 
-    std::cout << end - start << " ms" << std::endl;
+    std::cout << end - start << " ms" << std::endl;*/
 
-    
-    
+
+    // DP, LIS
+    /*::memset(cache_LIS, -1, sizeof(cache_LIS));
+
+    seq = { 1, 9, 2, 5, 7 };
+
+    int ret = 0;
+    for (int pos = 0; pos < seq.size(); ++pos)
+        ret = max(ret, LIS(pos));*/
+
+    // TP
+    board_TP = vector<vector<int>>
+    {
+        {6},
+        {1, 2},
+        {3, 7, 4},
+        {9, 4, 1, 7},
+        {2, 7, 5, 9, 4}
+    };
+
+    N = board_TP.size();
+    cache_TP = vector<vector<int>>(N, vector<int>(N, -1));
+    nextX_TP = vector<vector<int>>(N, vector<int>(N));
+
+    int ret = path(0, 0);
+    cout << ret << endl;
+
+
+    // 경로 만들기
+    int y = 0;
+    int x = 0;
+
+    while (y < N)
+    {
+        cout << board_TP[y][x] << " -> ";
+
+        x = nextX_TP[y][x];
+        ++y;
+    }
+
     return 0;
 }
