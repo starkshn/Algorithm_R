@@ -642,11 +642,29 @@ int path(int y, int x)
 
     // 적용
     return ret = board_TP[y][x] + max(path(y + 1, x), path(y + 1, x + 1));
-
-    return 1;
 }
+#pragma endregion
 
 
+#pragma region DP
+int sum = 0;
+int input;
+
+vector<vector<int>> board(12, vector<int>(12, 0));
+int cache[12][12];
+
+int SumPath(int y, int x)
+{
+    // 기저
+    if (y == board.size() || x == board.size()) return 0;
+
+    // 캐시
+    int& ret = cache[y][x];
+    if (ret != -1) return ret;
+
+    // 구하기
+    return SumPath(y, x + 1) + SumPath(y + 1, x + 1) + SumPath(y + 1, x);
+}
 
 #pragma endregion
 
